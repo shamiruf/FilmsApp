@@ -26,13 +26,12 @@ export default function App() {
 
   const handleOrderedFilms = () => {
     const shallowCopy: Films = data.slice();
-    if (isAsc) {
-      shallowCopy.sort((a, b) => +b.episode_number - +a.episode_number);
-      setIsAsc(false);
-    } else {
-      shallowCopy.sort((a, b) => +a.episode_number - +b.episode_number);
-      setIsAsc(true);
-    }
+    shallowCopy.sort((a, b) =>
+      isAsc
+        ? +b.episode_number - +a.episode_number
+        : +a.episode_number - +b.episode_number
+    );
+    setIsAsc(!isAsc);
     setData(shallowCopy);
   };
 
