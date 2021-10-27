@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -29,7 +28,6 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView />
       <Text style={styles.mainTitle}>---List of Films---</Text>
       <FlatList
         contentContainerStyle={{ alignItems: "center" }}
