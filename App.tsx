@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -7,20 +7,32 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { data } from "./data";
+import { Films } from "./types";
 
 export default function App() {
-  const [arr, setArr] = useState(data);
   const [orderState, setOrderState] = useState("asc");
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState<Films>([]);
+
+  useEffect(() => {
+    fetch(
+      "https://raw.githubusercontent.com/RyanHemrick/star_wars_movie_app/master/movies.json"
+    )
+      .then((response) => response.json())
+      .then((json) => setData(json.movies))
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+  }, []);
+
   const handleOrderedFilms = () => {
     if (orderState === "asc") {
-      setArr(
-        arr.sort((a, b) => Number(b.episode_number) - Number(a.episode_number))
+      setData(
+        data.sort((a, b) => Number(b.episode_number) - Number(a.episode_number))
       );
       setOrderState("desc");
     } else {
-      setArr(
-        arr.sort((a, b) => Number(a.episode_number) - Number(b.episode_number))
+      setData(
+        data.sort((a, b) => Number(a.episode_number) - Number(b.episode_number))
       );
       setOrderState("asc");
     }
@@ -28,24 +40,32 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.mainTitle}>---List of Films---</Text>
-      <FlatList
-        contentContainerStyle={{ alignItems: "center" }}
-        data={arr}
-        renderItem={({ item, index }) => (
-          <View style={styles.film}>
-            <Image
-              style={styles.image}
-              source={require(`./assets/${item.poster}`)}
-            />
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.episode}>Episode: {item.episode_number}</Text>
-          </View>
-        )}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleOrderedFilms}>
-        <Text style={{ fontSize: 22, fontWeight: "600" }}>Reorder</Text>
-      </TouchableOpacity>
+      {isLoading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <View style={styles.container}>
+          <Text style={styles.mainTitle}>---List of Films---</Text>
+          <FlatList
+            contentContainerStyle={{ alignItems: "center" }}
+            data={data}
+            renderItem={({ item, index }) => (
+              <View style={styles.film}>
+                <Image
+                  style={styles.image}
+                  source={require(`./assets/${item.poster}`)}
+                />
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.episode}>
+                  Episode: {item.episode_number}
+                </Text>
+              </View>
+            )}
+          />
+          <TouchableOpacity style={styles.button} onPress={handleOrderedFilms}>
+            <Text style={{ fontSize: 22, fontWeight: "600" }}>Reorder</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
