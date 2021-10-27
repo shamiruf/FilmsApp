@@ -26,10 +26,14 @@ export default function App() {
 
   const handleOrderedFilms = () => {
     if (isAsc) {
-      setData(data.sort((a, b) => +b.episode_number - +a.episode_number));
+      setData(
+        data.slice().sort((a, b) => +b.episode_number - +a.episode_number)
+      );
       setIsAsc(false);
     } else {
-      setData(data.sort((a, b) => +a.episode_number - +b.episode_number));
+      setData(
+        data.slice().sort((a, b) => +a.episode_number - +b.episode_number)
+      );
       setIsAsc(true);
     }
   };
