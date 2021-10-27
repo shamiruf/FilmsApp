@@ -10,8 +10,8 @@ import {
 import { Films } from "./types";
 
 export default function App() {
-  const [orderState, setOrderState] = useState("asc");
-  const [isLoading, setLoading] = useState(true);
+  const [isAsc, setIsAsc] = useState<boolean>(true);
+  const [isLoading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<Films>([]);
 
   useEffect(() => {
@@ -25,16 +25,12 @@ export default function App() {
   }, []);
 
   const handleOrderedFilms = () => {
-    if (orderState === "asc") {
-      setData(
-        data.sort((a, b) => Number(b.episode_number) - Number(a.episode_number))
-      );
-      setOrderState("desc");
+    if (isAsc) {
+      setData(data.sort((a, b) => +b.episode_number - +a.episode_number));
+      setIsAsc(false);
     } else {
-      setData(
-        data.sort((a, b) => Number(a.episode_number) - Number(b.episode_number))
-      );
-      setOrderState("asc");
+      setData(data.sort((a, b) => +a.episode_number - +b.episode_number));
+      setIsAsc(true);
     }
   };
 
@@ -52,7 +48,9 @@ export default function App() {
               <View style={styles.film}>
                 <Image
                   style={styles.image}
-                  source={require(`./assets/${item.poster}`)}
+                  source={{
+                    uri: `https://raw.githubusercontent.com/RyanHemrick/star_wars_movie_app/master/public/images/star_wars_episode_${item.episode_number}_poster.png`,
+                  }}
                 />
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.episode}>
