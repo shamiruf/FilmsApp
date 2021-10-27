@@ -25,17 +25,15 @@ export default function App() {
   }, []);
 
   const handleOrderedFilms = () => {
+    const shallowCopy: Films = data.slice();
     if (isAsc) {
-      setData(
-        data.slice().sort((a, b) => +b.episode_number - +a.episode_number)
-      );
+      shallowCopy.sort((a, b) => +b.episode_number - +a.episode_number);
       setIsAsc(false);
     } else {
-      setData(
-        data.slice().sort((a, b) => +a.episode_number - +b.episode_number)
-      );
+      shallowCopy.sort((a, b) => +a.episode_number - +b.episode_number);
       setIsAsc(true);
     }
+    setData(shallowCopy);
   };
 
   return (
